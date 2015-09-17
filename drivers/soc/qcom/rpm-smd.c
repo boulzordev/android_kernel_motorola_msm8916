@@ -900,7 +900,8 @@ static void msm_rpm_smd_work(struct work_struct *work)
 	char buf[MAX_ERR_BUFFER_SIZE] = {0};
 
 	while (1) {
-		wait_for_completion_interruptible(&data_ready);
+		while (wait_for_completion_interruptible(
+			&data_ready) != 0);
 
 		spin_lock(&msm_rpm_data.smd_lock_read);
 		while (smd_is_pkt_avail(msm_rpm_data.ch_info)) {
@@ -1226,11 +1227,7 @@ int msm_rpm_wait_for_ack(uint32_t msg_id)
 	if (!elem)
 		return rc;
 
-	if (!wait_for_completion_timeout(&elem->ack, 20*HZ)) {
-		pr_err("%s TIMEOUT msg_id %d\n", __func__, msg_id);
-		BUG();
-	}
-
+	wait_for_completion(&elem->ack);
 	trace_rpm_smd_ack_recvd(0, msg_id, 0xDEADFEED);
 
 	rc = elem->errno;
