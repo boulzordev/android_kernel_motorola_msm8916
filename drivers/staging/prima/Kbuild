@@ -1,3 +1,5 @@
+EXTRA_CFLAGS += -Wno-array-bounds
+
 # We can build either as part of a standalone Kernel build or part
 # of an Android build.  Determine which mechanism is being used
 ifeq ($(MODNAME),)

@@ -1,3 +1,5 @@
+EXTRA_CFLAGS += -Wno-array-bounds
+
 default: all
 
 KBUILD_OPTIONS := WLAN_ROOT=$(PWD)

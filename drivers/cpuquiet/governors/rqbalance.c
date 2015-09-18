@@ -419,7 +419,7 @@ static CPU_SPEED_BALANCE balanced_speed_balance(void)
 	unsigned int max_cpus = cpuquiet_get_cpus(true);
 	unsigned int avg_nr_run = get_nr_run_avg();
 	unsigned int nr_run;
-	bool done;
+	bool done = false;
 
 	/* First use the up thresholds to see if we need to bring CPUs online. */
 	pr_debug("%s: Current core count max runqueue: %d\n", __func__,
@@ -822,7 +822,7 @@ int rqbalance_pm_notify(struct notifier_block *notify_block,
 static int rqbalance_get_package_info(void)
 {
 	struct cpufreq_frequency_table *table;
-	int count, i, prev_cluster, cur_cluster;
+	int count = 0, i = 0, prev_cluster = 0, cur_cluster = 0;
 
 	/* Paranoid initialization is needed in some conditions */
 	num_of_cores[CLUSTER_LITTLE] = 0;

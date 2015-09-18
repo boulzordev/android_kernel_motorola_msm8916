@@ -1,3 +1,5 @@
+EXTRA_CFLAGS += -Wno-array-bounds
+
 #
 # Makefile for the Linux TCP/IP (INET) layer.
 #
