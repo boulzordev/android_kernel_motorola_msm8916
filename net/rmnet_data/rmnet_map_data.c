@@ -120,6 +120,9 @@ struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
 	maph = (struct rmnet_map_header_s *) skb->data;
 	packet_len = ntohs(maph->pkt_len) + sizeof(struct rmnet_map_header_s);
 
+	if (config->ingress_data_format & RMNET_INGRESS_FORMAT_MAP_CKSUMV3)
+		packet_len += sizeof(struct rmnet_map_dl_checksum_trailer_s);
+
 	if ((((int)skb->len) - ((int)packet_len)) < 0) {
 		LOGM("%s", "Got malformed packet. Dropping");
 		return 0;
@@ -376,6 +379,10 @@ static int rmnet_map_validate_ipv4_packet_checksum(unsigned char *map_payload,
 
 	if (unlikely(!checksum_field))
 		return RMNET_MAP_CHECKSUM_ERR_UNKNOWN_TRANSPORT;
+
+	/* RFC 768 - Skip IPv4 UDP packets where sender checksum field is 0 */
+	if ((*checksum_field == 0) && (ip4h->protocol == IPPROTO_UDP))
+		return RMNET_MAP_CHECKSUM_SKIPPED;
 
 	checksum_value = ~ntohs(cksum_trailer->checksum_value);
 	ip_hdr_checksum = ~ip_fast_csum(ip4h, (int)ip4h->ihl);

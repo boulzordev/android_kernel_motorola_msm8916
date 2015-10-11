@@ -52,7 +52,6 @@ config FB_MSM_MDSS_TIMEOUT_DUMP
 
 config FB_MSM_MDSS_KCAL_CTRL
 	depends on FB_MSM_MDSS
-	default y
 	bool "MDSS color control"
 	---help---
 	  Enable sysfs for post-processing control of mdss-mdp5 display
